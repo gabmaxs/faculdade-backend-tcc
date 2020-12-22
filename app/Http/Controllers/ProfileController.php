@@ -16,8 +16,10 @@ class ProfileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, User $user)
+    public function store(Request $request)
     {
+        $user = auth()->user();
+
         $validator = Validator::make($request->all(), [
             'culinary_level' => 'required|max:10|numeric',
             'gender' => 'required|string|max:255',
@@ -37,13 +39,16 @@ class ProfileController extends Controller
             ], 400);
         }
 
-        $user->profile()->create($request->only('culinary_level, gender'));
+        $user->profile()->create([
+            "culinary_level" => $request->culinary_level,
+            "gender" => $request->gender
+        ]);
 
         return response()->json([
             "success" => true,
             "payload" => [
                 'message' => 'Perfil criado com sucesso',
-                'data' => $user
+                'data' => $user->with("Profile")->where('id',$user->id)->get()
             ],
             "links" => [
                 [
