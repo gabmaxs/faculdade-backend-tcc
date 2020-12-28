@@ -28,4 +28,5 @@ Route::middleware(["auth:api"])->group(function () {
     Route::get("category", "CategoryController@index");
     
     Route::post("recipe", "RecipeController@store");
+    Route::get("recipe/{recipe}", "RecipeController@show");
 });

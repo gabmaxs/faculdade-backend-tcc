@@ -69,4 +69,21 @@ class RecipeController extends Controller
             ]
         ], 201);
     }
+
+    public function show(Recipe $recipe) {
+        return response()->json([
+            "success" => true,
+            "payload" => [
+                'message' => 'Receita recuperada com sucesso',
+                'data' => $recipe->with("Ingredients")->get()
+            ],
+            "links" => [
+                [
+                    "href" => "",
+                    "rel" => "",
+                    "type" => ""
+                ],
+            ]
+        ], 200);
+    }
 }
