@@ -86,4 +86,22 @@ class RecipeController extends Controller
             ]
         ], 200);
     }
+
+    public function index() {
+        $recipes = Recipe::all();
+        return response()->json([
+            "success" => true,
+            "payload" => [
+                'message' => 'Receitas recuperadas com sucesso',
+                'data' => $recipes
+            ],
+            "links" => [
+                [
+                    "href" => "",
+                    "rel" => "",
+                    "type" => ""
+                ],
+            ]
+        ], 200);
+    }
 }
