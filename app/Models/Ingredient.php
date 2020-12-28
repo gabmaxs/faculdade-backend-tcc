@@ -11,7 +11,24 @@ class Ingredient extends Model
 
     protected $fillable = ["name"];
 
+    protected $hidden = [
+        "id", "created_at", "updated_at"
+    ];
+
     public function recipes() {
         $this->belongsToMany(Recipe::class);
+    }
+
+    public function toArray()
+    {
+        $attributes = $this->attributesToArray();
+        $attributes = array_merge($attributes, $this->relationsToArray());
+
+        if (isset($attributes['pivot'])) {
+            $attributes['quantity'] = $attributes['pivot']['quantity'];
+            $attributes['measure'] = $attributes['pivot']['measure'];
+            unset($attributes['pivot']);
+        }
+        return $attributes;
     }
 }
