@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class RecipeController extends Controller
 {
@@ -15,7 +15,7 @@ class RecipeController extends Controller
 
         $validator = Validator::make($request->all(), [
             "name" => "required|string|max:255",
-            "image" => "nullable|string|max:255",
+            "image" => "required|file|mimes:jpg,gif,png,jpeg|max:2048",
             "number_of_servings" => "required|numeric|max:50",
             "cooking_time" => "required|numeric|max:360",
             "how_to_cook" => "required|array|max:2000",
@@ -36,9 +36,12 @@ class RecipeController extends Controller
             ], 400);
         }
 
+        $path = $request->file("image")->store("public/recipes");
+        $url = env("APP_URL").Storage::url($path);
+
         $recipe = $user->recipes()->create([
             "name" => $request->name,
-            "image" => $request->image,
+            "image" => $url,
             "number_of_servings" => $request->number_of_servings,
             "cooking_time" => $request->cooking_time,
             "how_to_cook" => $request->how_to_cook,
