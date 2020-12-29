@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facade\Response;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -27,16 +28,7 @@ class ProfileController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                "success" => false,
-                "payload" => [
-                    "message" => $validator->errors()
-                ],
-                "error" => [
-                    "code" => 400,
-                    "message" => "Bad Request"
-                ]
-            ], 400);
+            return response()->json(Response::error($validator->errors()), 400);
         }
 
         $user->profile()->create([
@@ -44,20 +36,8 @@ class ProfileController extends Controller
             "gender" => $request->gender
         ]);
 
-        return response()->json([
-            "success" => true,
-            "payload" => [
-                'message' => 'Perfil criado com sucesso',
-                'data' => $user->with("Profile")->where('id',$user->id)->get()
-            ],
-            "links" => [
-                [
-                    "href" => "",
-                    "rel" => "",
-                    "type" => ""
-                ],
-            ]
-        ], 201);
+        $data = $user->with("Profile")->where('id',$user->id)->get();
+        return response()->json(Response::success($data, 'Perfil criado com sucesso'),201);
     }
 
     /**
