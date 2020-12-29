@@ -7,6 +7,7 @@ use App\Models\Recipe;
 use App\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Facade\Response;
 
 class RecipeController extends Controller
 {
@@ -24,16 +25,7 @@ class RecipeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                "success" => false,
-                "payload" => [
-                    "message" => $validator->errors()
-                ],
-                "error" => [
-                    "code" => 400,
-                    "message" => "Bad Request"
-                ]
-            ], 400);
+            return response()->json(Response::Error($validator->errors()), 400);
         }
 
         $path = $request->file("image")->store("public/recipes");
@@ -58,37 +50,13 @@ class RecipeController extends Controller
             ]);
         }
 
-        return response()->json([
-            "success" => true,
-            "payload" => [
-                'message' => 'Receita criada com sucesso',
-                'data' => $recipe->with("Ingredients")->where('id',$recipe->id)->get()
-            ],
-            "links" => [
-                [
-                    "href" => "",
-                    "rel" => "",
-                    "type" => ""
-                ],
-            ]
-        ], 201);
+        $data = $recipe->with("Ingredients")->where('id',$recipe->id)->get();
+        return response()->json(Response::Success($data,Recipe::message("created")), 201);
     }
 
     public function show(Recipe $recipe) {
-        return response()->json([
-            "success" => true,
-            "payload" => [
-                'message' => 'Receita recuperada com sucesso',
-                'data' => $recipe->with("Ingredients")->where('id',$recipe->id)->get()
-            ],
-            "links" => [
-                [
-                    "href" => "",
-                    "rel" => "",
-                    "type" => ""
-                ],
-            ]
-        ], 200);
+        $data = $recipe->with("Ingredients")->where('id',$recipe->id)->get();
+        return response()->json(Response::Success($data,Recipe::message("show")), 200);
     }
 
     public function index(Request $request) {
@@ -99,19 +67,6 @@ class RecipeController extends Controller
         if($request->has("min_time")) $recipes->where('cooking_time','>=',$request->query('min_time'));
         if($request->has("max_time")) $recipes->where('cooking_time','<=',$request->query('max_time'));
 
-        return response()->json([
-            "success" => true,
-            "payload" => [
-                'message' => 'Receitas recuperadas com sucesso',
-                'data' => $recipes->get()
-            ],
-            "links" => [
-                [
-                    "href" => "",
-                    "rel" => "",
-                    "type" => ""
-                ],
-            ]
-        ], 200);
+        return response()->json(Response::Success($recipes->get(), Recipe::message("index")), 200);
     }
 }
