@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facade\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
@@ -32,34 +33,16 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                "success" => false,
-                "payload" => [
-                    "message" => $validator->errors()
-                ],
-                "error" => [
-                    "code" => 400,
-                    "message" => "Bad Request"
-                ]
-            ], 400);
+            return response()->json(Response::error($validator->errors()), 400);
         }
 
         $credentials = $request->only('email', 'password');
 
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json([
-                "success" => false,
-                "payload" => [
-                    "message" => "E-mail ou senha inválidos"
-                ],
-                "error" => [
-                    "code" => 401,
-                    "message" => "Unauthorized"
-                ]
-            ], 401);
+            return response()->json(Response::error("E-mail ou senha inválidos", "Unauthorized", 401), 400);
         }
 
-        return $this->respondWithToken($token, 200);
+        return $this->respondWithToken($token, "Login realizado com sucesso", 200);
     }
 
     public function register(Request $request) {
@@ -70,16 +53,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                "success" => false,
-                "payload" => [
-                    "message" => $validator->errors()
-                ],
-                "error" => [
-                    "code" => 400,
-                    "message" => "Bad Request"
-                ]
-            ], 400);
+            return response()->json(Response::error($validator->errors()), 400);
         }
 
         $user = User::create([
@@ -90,7 +64,7 @@ class AuthController extends Controller
 
         $token = auth()->login($user);
 
-        return $this->respondWithToken($token, 201);
+        return $this->respondWithToken($token, "Registro realizado com sucesso", 201);
     }
 
     /**
@@ -112,11 +86,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json([
-            "success" => true,
-            "payload" => [
-                'message' => 'Desconectado com sucesso'
-            ],
+        $links = [
             "links" => [
                 [
                     "href" => "",
@@ -124,7 +94,9 @@ class AuthController extends Controller
                     "type" => ""
                 ],
             ]
-        ], 200);
+        ];
+
+        return response()->json(Response::success($links, 'Desconectado com sucesso'),200);
     }
 
     /**
@@ -134,7 +106,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh(), 200);
+        return $this->respondWithToken(auth()->refresh(), "Atualização de token realizado com sucesso", 200);
     }
 
     /**
@@ -144,22 +116,14 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token, $code)
+    protected function respondWithToken($token, $message, $code)
     {
-        return response()->json([
-            "success" => true,
-            "payload" => [
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => auth()->factory()->getTTL() * 60
-            ],
-            "links" => [
-                [
-                    "href" => "",
-                    "rel" => "",
-                    "type" => ""
-                ],
-            ]
-        ], $code);
+        $data = [
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ];
+
+        return response()->json(Response::success($data, $message),$code);
     }
 }
