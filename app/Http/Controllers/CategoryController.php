@@ -2,27 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Facade\Response;
 
 class CategoryController extends Controller
 {
     public function index() {
         $categories = Category::all();
 
-        return response()->json([
-            "success" => true,
-            "payload" => [
-                'message' => 'Categorias recuperadas com sucesso',
-                'data' => $categories
-            ],
-            "links" => [
-                [
-                    "href" => "",
-                    "rel" => "",
-                    "type" => ""
-                ],
-            ]
-        ], 200);
+        return response()->json(Response::success($categories, "Categorias recuperadas com sucesso"),200);
     }
 }

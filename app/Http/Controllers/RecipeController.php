@@ -25,7 +25,7 @@ class RecipeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(Response::Error($validator->errors()), 400);
+            return response()->json(Response::error($validator->errors()), 400);
         }
 
         $path = $request->file("image")->store("public/recipes");
@@ -51,12 +51,12 @@ class RecipeController extends Controller
         }
 
         $data = $recipe->with("Ingredients")->where('id',$recipe->id)->get();
-        return response()->json(Response::Success($data,Recipe::message("created")), 201);
+        return response()->json(Response::success($data,Recipe::message("created")), 201);
     }
 
     public function show(Recipe $recipe) {
         $data = $recipe->with("Ingredients")->where('id',$recipe->id)->get();
-        return response()->json(Response::Success($data,Recipe::message("show")), 200);
+        return response()->json(Response::success($data,Recipe::message("show")), 200);
     }
 
     public function index(Request $request) {
@@ -67,6 +67,6 @@ class RecipeController extends Controller
         if($request->has("min_time")) $recipes->where('cooking_time','>=',$request->query('min_time'));
         if($request->has("max_time")) $recipes->where('cooking_time','<=',$request->query('max_time'));
 
-        return response()->json(Response::Success($recipes->get(), Recipe::message("index")), 200);
+        return response()->json(Response::success($recipes->get(), Recipe::message("index")), 200);
     }
 }
