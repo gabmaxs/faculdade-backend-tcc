@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class RecipeController extends Controller
 {
@@ -58,7 +59,7 @@ class RecipeController extends Controller
             "success" => true,
             "payload" => [
                 'message' => 'Receita criada com sucesso',
-                'data' => $recipe->with("Ingredients")->get()
+                'data' => $recipe->with("Ingredients")->where('id',$recipe->id)->get()
             ],
             "links" => [
                 [
@@ -75,7 +76,7 @@ class RecipeController extends Controller
             "success" => true,
             "payload" => [
                 'message' => 'Receita recuperada com sucesso',
-                'data' => $recipe->with("Ingredients")->get()
+                'data' => $recipe->with("Ingredients")->where('id',$recipe->id)->get()
             ],
             "links" => [
                 [
@@ -87,13 +88,19 @@ class RecipeController extends Controller
         ], 200);
     }
 
-    public function index() {
-        $recipes = Recipe::all();
+    public function index(Request $request) {
+        $recipes = Recipe::with('Ingredients');
+
+        if($request->has("limit")) $recipes->take($request->query('limit'));
+        if($request->has("category")) $recipes->where('category_id',$request->query('category'));
+        if($request->has("min_time")) $recipes->where('cooking_time','>=',$request->query('min_time'));
+        if($request->has("max_time")) $recipes->where('cooking_time','<=',$request->query('max_time'));
+
         return response()->json([
             "success" => true,
             "payload" => [
                 'message' => 'Receitas recuperadas com sucesso',
-                'data' => $recipes
+                'data' => $recipes->get()
             ],
             "links" => [
                 [
