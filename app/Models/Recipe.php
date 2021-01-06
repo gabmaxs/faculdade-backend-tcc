@@ -18,6 +18,8 @@ class Recipe extends Model
         "how_to_cook" => "array"
     ];
 
+    protected $hidden = ["pivot"];
+
     protected $appends = ["links"];
 
     public static $message = [
