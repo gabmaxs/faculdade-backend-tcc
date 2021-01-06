@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Facade\Response;
+use App\Http\Resources\CategoryCollection;
 
 class CategoryController extends Controller
 {
     public function index() {
         $categories = Category::all();
 
-        return response()->json(Response::success($categories, "Categorias recuperadas com sucesso"),200);
+        return new CategoryCollection($categories, "Categorias recuperadas com sucesso");
     }
 }

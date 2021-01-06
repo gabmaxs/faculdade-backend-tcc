@@ -8,7 +8,8 @@ use App\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Facade\Response;
-use Illuminate\Support\Facades\DB;
+use App\Http\Resources\Recipe as RecipeResource;
+use App\Http\Resources\RecipeCollection;
 
 class RecipeController extends Controller
 {
@@ -51,19 +52,19 @@ class RecipeController extends Controller
             ]);
         }
 
-        $data = $recipe->with("Ingredients")->where('id',$recipe->id)->get();
-        return response()->json(Response::success($data,Recipe::message("created")), 201);
+        $data = $recipe->with("Ingredients")->where('recipes.id',$recipe->id)->first();
+        return (new RecipeResource($data,Recipe::message("created")))->response()->setStatusCode(201);
     }
 
     public function show(Recipe $recipe) {
-        $data = $recipe->with("Ingredients")->where('id',$recipe->id)->get();
-        return response()->json(Response::success($data,Recipe::message("show")), 200);
+        $data = $recipe->with("Ingredients")->where('recipes.id',$recipe->id)->first();
+        return new RecipeResource($data,Recipe::message("show"));
     }
 
     public function index(Request $request) {
         $recipes = Recipe::join("ingredient_recipe", "recipes.id", "=", "ingredient_recipe.recipe_id")
             ->join("ingredients", "ingredient_recipe.ingredient_id", "ingredients.id")
-            ->select("recipes.id", "recipes.name", "recipes.image");
+            ->select("recipes.id", "recipes.name", "recipes.image", "recipes.created_at", "recipes.updated_at", "recipes.category_id", "recipes.user_id");
 
         if($request->has("limit")) $recipes->take($request->query('limit'));
         if($request->has("category")) $recipes->where('recipes.category_id',$request->query('category'));
@@ -71,6 +72,6 @@ class RecipeController extends Controller
         if($request->has("max_time")) $recipes->where('recipes.cooking_time','<=',$request->query('max_time'));
         if($request->has("ingredients")) $recipes->whereIn("ingredients.name", $request->query("ingredients"));
         
-        return response()->json(Response::success($recipes->groupBy("recipes.id")->get(), Recipe::message("index")), 200);
+        return new RecipeCollection($recipes->groupBy("recipes.id")->get(),Recipe::message("index"));
     }
 }

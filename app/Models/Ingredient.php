@@ -18,17 +18,4 @@ class Ingredient extends Model
     public function recipes() {
         return $this->belongsToMany(Recipe::class);
     }
-
-    public function toArray()
-    {
-        $attributes = $this->attributesToArray();
-        $attributes = array_merge($attributes, $this->relationsToArray());
-
-        if (isset($attributes['pivot'])) {
-            $attributes['quantity'] = $attributes['pivot']['quantity'];
-            $attributes['measure'] = $attributes['pivot']['measure'];
-            unset($attributes['pivot']);
-        }
-        return $attributes;
-    }
 }
