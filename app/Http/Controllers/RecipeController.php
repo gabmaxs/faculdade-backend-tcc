@@ -66,12 +66,14 @@ class RecipeController extends Controller
             ->join("ingredients", "ingredient_recipe.ingredient_id", "ingredients.id")
             ->select("recipes.id", "recipes.name", "recipes.image", "recipes.created_at", "recipes.updated_at", "recipes.category_id", "recipes.user_id");
 
-        if($request->has("limit")) $recipes->take($request->query('limit'));
         if($request->has("category")) $recipes->where('recipes.category_id',$request->query('category'));
         if($request->has("min_time")) $recipes->where('recipes.cooking_time','>=',$request->query('min_time'));
         if($request->has("max_time")) $recipes->where('recipes.cooking_time','<=',$request->query('max_time'));
         if($request->has("ingredients")) $recipes->whereIn("ingredients.name", $request->query("ingredients"));
         
-        return new RecipeCollection($recipes->groupBy("recipes.id")->get(),Recipe::message("index"));
+        if($request->has("limit")) $recipes = $recipes->groupBy("recipes.id")->paginate($request->query("limit"));
+        else $recipes = $recipes->groupBy("recipes.id")->paginate(15);
+
+        return new RecipeCollection($recipes,Recipe::message("index"));
     }
 }

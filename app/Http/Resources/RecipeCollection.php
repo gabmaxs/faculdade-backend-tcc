@@ -22,14 +22,16 @@ class RecipeCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
+            "success" => true,
+            "message" => $this->text,
             "data" => $this->collection
         ];
     }
 
-    public function with($request) {
-        return [
-            "success" => true,
-            "message" => $this->text,
-        ];
-    }
+    // public function with($request) {
+    //     return [
+    //         "success" => true,
+    //         "message" => $this->text,
+    //     ];
+    // }
 }
