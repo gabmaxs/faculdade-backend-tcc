@@ -8,6 +8,7 @@ use App\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Facade\Response;
+use Illuminate\Support\Facades\DB;
 
 class RecipeController extends Controller
 {
@@ -60,13 +61,16 @@ class RecipeController extends Controller
     }
 
     public function index(Request $request) {
-        $recipes = Recipe::with('Ingredients');
+        $recipes = Recipe::join("ingredient_recipe", "recipes.id", "=", "ingredient_recipe.recipe_id")
+            ->join("ingredients", "ingredient_recipe.ingredient_id", "ingredients.id")
+            ->select("recipes.id", "recipes.name", "recipes.image");
 
         if($request->has("limit")) $recipes->take($request->query('limit'));
-        if($request->has("category")) $recipes->where('category_id',$request->query('category'));
-        if($request->has("min_time")) $recipes->where('cooking_time','>=',$request->query('min_time'));
-        if($request->has("max_time")) $recipes->where('cooking_time','<=',$request->query('max_time'));
-
-        return response()->json(Response::success($recipes->get(), Recipe::message("index")), 200);
+        if($request->has("category")) $recipes->where('recipes.category_id',$request->query('category'));
+        if($request->has("min_time")) $recipes->where('recipes.cooking_time','>=',$request->query('min_time'));
+        if($request->has("max_time")) $recipes->where('recipes.cooking_time','<=',$request->query('max_time'));
+        if($request->has("ingredients")) $recipes->whereIn("ingredients.name", $request->query("ingredients"));
+        
+        return response()->json(Response::success($recipes->groupBy("recipes.id")->get(), Recipe::message("index")), 200);
     }
 }
