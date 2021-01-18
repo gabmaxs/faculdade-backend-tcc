@@ -24,10 +24,9 @@ Route::group(["middleware" => "api", "prefix" => "auth"], function ($router) {
 
 Route::middleware(["auth:api"])->group(function () {
     Route::post("user/profile", "ProfileController@store");
-
-    Route::get("category", "CategoryController@index");
-    
     Route::post("recipe", "RecipeController@store");
-    Route::get("recipe/{recipe}", "RecipeController@show");
-    Route::get("recipe", "RecipeController@index");
 });
+
+Route::get("recipe", "RecipeController@index");
+Route::get("recipe/{recipe}", "RecipeController@show");
+Route::get("category", "CategoryController@index");
