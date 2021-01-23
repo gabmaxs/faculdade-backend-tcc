@@ -30,3 +30,4 @@ Route::middleware(["auth:api"])->group(function () {
 Route::get("recipe", "RecipeController@index");
 Route::get("recipe/{recipe}", "RecipeController@show");
 Route::get("category", "CategoryController@index");
+Route::get("category/{category}","CategoryController@show");
