@@ -31,3 +31,14 @@ Route::get("recipe", "RecipeController@index");
 Route::get("recipe/{recipe}", "RecipeController@show");
 Route::get("category", "CategoryController@index");
 Route::get("category/{category}","CategoryController@show");
+
+Route::fallback(function () {
+    return response()->json([
+        "success" => false,
+        "message" => "Página não encontrada",
+        "error" => [
+            "code" => 404,
+            "message" => "Not Found"
+        ]
+    ], 404);
+});
