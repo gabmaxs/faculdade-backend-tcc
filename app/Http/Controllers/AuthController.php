@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Facade\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\AuthenticationException;
 
 class AuthController extends Controller
 {
@@ -27,34 +27,24 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'email' => 'required|string|max:255',
             'password' => 'required|string|max:255',
         ]);
-
-        if ($validator->fails()) {
-            return response()->json(Response::error($validator->errors()), 400);
-        }
-
+        
         $credentials = $request->only('email', 'password');
-
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(Response::error("E-mail ou senha inválidos", "Unauthorized", 401), 400);
-        }
+        $token = auth()->attempt($credentials);
+        if(!$token) throw new AuthenticationException();
 
         return $this->respondWithToken($token, "Login realizado com sucesso", 200);
     }
 
     public function register(Request $request) {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|max:255|unique:users',
             'password' => 'required|string|max:255|confirmed',
         ]);
-
-        if ($validator->fails()) {
-            return response()->json(Response::error($validator->errors()), 400);
-        }
 
         $user = User::create([
             'name' => $request->name,
@@ -63,6 +53,7 @@ class AuthController extends Controller
         ]);
 
         $token = auth()->login($user);
+        if(!$token) throw new AuthenticationException();
 
         return $this->respondWithToken($token, "Registro realizado com sucesso", 201);
     }
