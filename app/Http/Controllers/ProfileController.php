@@ -56,6 +56,21 @@ class ProfileController extends Controller
      */
     public function update(Request $request, Profile $profile)
     {
-        //
+        $user = auth()->user();
+
+        $request->validate([
+            'culinary_level' => 'required|max:10|numeric',
+            'gender' => 'required|string|max:255',
+            'photo' => 'nullable',
+        ]);
+
+        $profile = $user->profile;
+        $profile->fill([
+            "culinary_level" => $request->culinary_level,
+            "gender" => $request->gender
+        ]);
+        $profile->save();
+
+        return new UserResource($user, "Perfil atualizado com sucesso");
     }
 }

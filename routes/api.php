@@ -23,6 +23,7 @@ Route::group(["middleware" => "api", "prefix" => "auth"], function ($router) {
 
 Route::middleware(["auth:api"])->group(function () {
     Route::post("user/profile", "ProfileController@store");
+    Route::put("user/profile", "ProfileController@update");
     Route::get("user/profile", "ProfileController@show");
     Route::post("recipe", "RecipeController@store");
 });
