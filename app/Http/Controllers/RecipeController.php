@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\Ingredient;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
-use App\Facade\Response;
 use App\Http\Resources\Recipe as RecipeResource;
 use App\Http\Resources\RecipeCollection;
 
@@ -16,7 +14,7 @@ class RecipeController extends Controller
     public function store(Request $request) {
         $user = auth()->user();
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             "name" => "required|string|max:255",
             "image" => "required|file|mimes:jpg,gif,png,jpeg|max:2048",
             "number_of_servings" => "required|numeric|max:50",
@@ -26,34 +24,17 @@ class RecipeController extends Controller
             "list_of_ingredients" => "required|array|max:2000",
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(Response::error($validator->errors()), 400);
-        }
-
-        $path = $request->file("image")->store("public/recipes");
-        $url = env("APP_URL").Storage::url($path);
-
         $recipe = $user->recipes()->create([
             "name" => $request->name,
-            "image" => $url,
             "number_of_servings" => $request->number_of_servings,
             "cooking_time" => $request->cooking_time,
             "how_to_cook" => $request->how_to_cook,
             "category_id" => $request->category_id,
         ]);
+        $recipe->saveImage($request->file("image"));
+        $recipe->saveIngredients($request->get('list_of_ingredients'));
 
-        foreach($request->get('list_of_ingredients') as $ingredient_array) {
-            $ingredient = Ingredient::firstOrCreate([
-                "name" => ucfirst($ingredient_array["name"])
-            ]);
-            $recipe->ingredients()->attach($ingredient->id, [
-                "quantity" => $ingredient_array["quantity"],
-                "measure" => $ingredient_array["measure"]
-            ]);
-        }
-
-        $data = $recipe->with("Ingredients")->where('recipes.id',$recipe->id)->first();
-        return (new RecipeResource($data,Recipe::message("created")))->response()->setStatusCode(201);
+        return (new RecipeResource($recipe,Recipe::message("created")))->response()->setStatusCode(201);
     }
 
     public function show(Recipe $recipe) {
