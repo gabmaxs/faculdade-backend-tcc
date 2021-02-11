@@ -7,6 +7,7 @@ use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\User as UserResource;
 
 class ProfileController extends Controller
 {
@@ -46,9 +47,10 @@ class ProfileController extends Controller
      * @param  \App\Models\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function show(Profile $profile)
+    public function show()
     {
-        //
+        $user = auth()->user();
+        return new UserResource($user, "Usuário recuperada com sucesso");
     }
 
     /**
