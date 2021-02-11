@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-// use App\Models\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class Recipe extends Model
 {
@@ -34,5 +35,24 @@ class Recipe extends Model
     
     public function category() {
         return $this->belongsTo(Category::class);
+    }
+
+    public function saveImage(UploadedFile $image) {
+        $path = $image->store("public/recipes");
+
+        $this->attributes['image'] = env("APP_URL").Storage::url($path);
+        $this->save();
+    }
+
+    public function saveIngredients($list_of_ingredients) {
+        foreach($list_of_ingredients as $ingredient_array) {
+            $ingredient = Ingredient::firstOrCreate([
+                "name" => ucfirst($ingredient_array["name"])
+            ]);
+            $this->ingredients()->attach($ingredient->id, [
+                "quantity" => $ingredient_array["quantity"],
+                "measure" => $ingredient_array["measure"]
+            ]);
+        }
     }
 }

@@ -19,11 +19,12 @@ Route::group(["middleware" => "api", "prefix" => "auth"], function ($router) {
     Route::post("register", "AuthController@register");
     Route::post("logout", "AuthController@logout");
     Route::post("refresh", "AuthController@refresh");
-    Route::post("me", "AuthController@me");
 });
 
 Route::middleware(["auth:api"])->group(function () {
     Route::post("user/profile", "ProfileController@store");
+    Route::put("user/profile", "ProfileController@update");
+    Route::get("user/profile", "ProfileController@show");
     Route::post("recipe", "RecipeController@store");
 });
 
