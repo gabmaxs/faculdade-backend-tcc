@@ -63,79 +63,94 @@ class Handler extends ExceptionHandler
     public function handleApiException($request, Throwable $exception)
     {
         $exception = $this->prepareException($exception);
+
         if (config('app.debug')) {
             return parent::render($request, $exception);            
         }
 
-        $clientMessage = "Opa, parece que algo deu errado";
-        $statusCode = 500;
-
-        if ($exception instanceof MethodNotAllowedHttpException) {
-            $allow = $exception->getHeaders();
-            $clientMessage = "Método(s) permitido(s) para essa URL: {$allow['Allow']}";
-            $statusCode = 405;
+        try {
+            $method = $this->getMethod($exception);
+            $messageData = $this->$method($exception, $request);
+        }
+        catch(\Exception $e) {
+            $messageData = [
+                "clientMessage" => "Opa, parece que algo deu errado",
+                "statusCode" => $e->getCode(),
+                "errorMessage" => $e->getMessage()
+            ];
         }
 
-        if ($exception instanceof NotFoundHttpException) {
-            $model = $exception->getPrevious()->getModel();
-            $id = $exception->getPrevious()->getIds()[0];
-            $clientMessage = "{$this->mapModels[$model]} de ID {$id} não existe";
-            $statusCode = 404;
-        }
-    
-        if ($exception instanceof AuthenticationException) {
-            $exception = $this->unauthenticated($request, $exception);
-            $clientMessage = "E-mail ou senha inválido(s)";
-            $statusCode = 401;
-        }
-
-        if ($exception instanceof AccessDeniedHttpException) {
-            $clientMessage = "Ação não permitida";
-            $statusCode = 403;
-        }
-    
-        if ($exception instanceof ValidationException) {
-            $exception = $this->convertValidationExceptionToResponse($exception, $request);
-            $clientMessage = $exception['errors'];
-            $statusCode = 422;
-        }
-
-        return $this->customApiResponse($clientMessage, $statusCode);
+        return $this->customApiResponse($messageData);
     }
 
-    public function customApiResponse($clientMessage, $statusCode) {
+    private function getMethod(Throwable $exception) {
+        $class_name = get_class($exception);
+        $array_class = explode("\\",$class_name);
+        $method = end($array_class);
+
+        return $method;
+    }
+
+    public function customApiResponse($messageData) {
         $response = [
             "success" => false,
-            "message" => $clientMessage,
+            "message" => $messageData["clientMessage"],
             "error" => [
-                "code" => $statusCode,
-                "message" => ""
+                "code" => $messageData["statusCode"],
+                "message" => $messageData["errorMessage"]
             ]
         ];
 
-        switch ($statusCode) {
-            case 401:
-                $response['error']['message'] = 'Unauthorized';
-                break;
-            case 403:
-                $response['error']['message'] = 'Forbidden';
-                break;
-            case 404:
-                $response['error']['message'] = 'Not Found';
-                break;
-            case 405:
-                $response['error']['message'] = 'Method Not Allowed';
-                break;
-            case 422:
-                $response['error']['message'] = 'Unprocessable Entity';
-                break;
-            default:
-                $response['error']['message'] = ($statusCode == 500) ? 'Internal Server Error' : 'Whoops, looks like something went wrong';
-                break;
-        }
-    
+        return response()->json($response, $messageData["statusCode"]);
+    }
 
-        return response()->json($response, $statusCode);
+    public function AuthenticationException(Throwable $exception, $request) {
+        $exception = $this->unauthenticated($request, $exception);
+
+        return [
+            "clientMessage" => "E-mail ou senha inválido(s)",
+            "statusCode" => 401,
+            "errorMessage" => "Unauthorized"
+        ];
+    }
+
+    public function AccessDeniedHttpException(Throwable $exception, $request) {
+        return [
+            "clientMessage" => "Ação não permitida",
+            "statusCode" => 403,
+            "errorMessage" => "Forbidden"
+        ];
+    }
+
+    public function NotFoundHttpException(Throwable $exception, $request) {
+        $model = $exception->getPrevious()->getModel();
+        $id = $exception->getPrevious()->getIds()[0];
+
+        return [
+            "clientMessage" => "{$this->mapModels[$model]} de ID {$id} não existe",
+            "statusCode" => 404,
+            "errorMessage" => "Not Found"
+        ];
+    }
+
+    public function MethodNotAllowedHttpException(Throwable $exception, $request) {
+        $allow = $exception->getHeaders();
+
+        return [
+            "clientMessage" => "Método(s) permitido(s) para essa URL: {$allow['Allow']}",
+            "statusCode" => 405,
+            "errorMessage" => "Method Not Allowed"
+        ];
+    }
+
+    public function ValidationException(Throwable $exception, $request) {
+        $exception = $this->convertValidationExceptionToResponse($exception, $request);
+
+        return [
+            "clientMessage" => $exception['errors'],
+            "statusCode" => 422,
+            "errorMessage" => "Unprocessable Entity"
+        ];
     }
 
     //OVERWRITE INVALID JSON
