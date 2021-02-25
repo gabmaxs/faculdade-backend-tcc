@@ -16,7 +16,6 @@ class RecipeController extends Controller
 
         $request->validate([
             "name" => "required|string|max:255",
-            "image" => "required|file|mimes:jpg,gif,png,jpeg|max:2048",
             "number_of_servings" => "required|numeric|max:50",
             "cooking_time" => "required|numeric|max:360",
             "how_to_cook" => "required|array|max:2000",
@@ -31,7 +30,6 @@ class RecipeController extends Controller
             "how_to_cook" => $request->how_to_cook,
             "category_id" => $request->category_id,
         ]);
-        $recipe->saveImage($request->file("image"));
         $recipe->saveIngredients($request->get('list_of_ingredients'));
 
         return (new RecipeResource($recipe,Recipe::message("created")))->response()->setStatusCode(201);
@@ -56,5 +54,14 @@ class RecipeController extends Controller
         else $recipes = $recipes->groupBy("recipes.id")->paginate(15);
 
         return new RecipeCollection($recipes,Recipe::message("index"));
+    }
+
+    public function storeImage(Request $request, Recipe $recipe) {
+        $request->validate([
+            "image" => "required|file|mimes:jpg,gif,png,jpeg|max:2048",
+        ]);
+
+        $recipe->saveImage($request->file("image"));
+        return (new RecipeResource($recipe,Recipe::message("image")))->response()->setStatusCode(201);
     }
 }
