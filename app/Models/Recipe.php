@@ -20,9 +20,10 @@ class Recipe extends Model
     ];
 
     public static $message = [
-        "show" => "Receita recuperada com sucesso",
-        "created" => "Receita criada com sucesso",
-        "index" => "Receitas recuperadas com sucesso"
+        "show" => "Receita recuperada",
+        "created" => "Receita salva",
+        "index" => "Receitas recuperadas",
+        "image" => "Imagem da receita salva"
     ];
 
     public static function message($text) {
