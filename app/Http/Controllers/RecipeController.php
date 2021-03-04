@@ -71,7 +71,10 @@ class RecipeController extends Controller
                     return $ingredient->name == $ingredientName;
                 });
 
-                if($hasIngredient) $numberOfIngredients++;
+                if($hasIngredient) {
+                    $numberOfIngredients++;
+                    $recipe->researched_ingredients = $ingredientName;
+                }
             }
             return $numberOfIngredients;
         })->forPage($request->query("page",1),$request->query("limit",15))->values();

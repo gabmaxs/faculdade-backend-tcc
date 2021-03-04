@@ -30,6 +30,17 @@ class Recipe extends Model
         return self::$message[$text];
     }
 
+    public function getResearchedIngredientsAttribute() {
+        return $this->attributes['researched_ingredients'] ?? [];
+    }
+
+    public function setResearchedIngredientsAttribute($value) {
+        if(!isset($this->attributes['researched_ingredients']))
+            $this->attributes['researched_ingredients'] = [];
+
+        array_push($this->attributes['researched_ingredients'], $value);
+    }
+
     public function ingredients() {
         return $this->belongsToMany(Ingredient::class)->withPivot("quantity","measure");
     }
@@ -55,5 +66,20 @@ class Recipe extends Model
                 "measure" => $ingredient_array["measure"]
             ]);
         }
+    }
+
+    private function baseQuery($query) {
+        return $query->join("ingredient_recipe", "recipes.id", "=", "ingredient_recipe.recipe_id")
+            ->join("ingredients", "ingredient_recipe.ingredient_id", "ingredients.id")
+            ->select("recipes.id", "recipes.name", "recipes.image", "recipes.created_at", "recipes.updated_at", "recipes.category_id", "recipes.user_id");
+    }
+
+    public function scopeSearchRecipes($query, $ingredients) {
+        $query = $this->baseQuery($query);
+        dd($query->toSql());
+        
+        $query->whereIn("ingredients.name", $ingredients);
+        
+        return $query;
     }
 }
