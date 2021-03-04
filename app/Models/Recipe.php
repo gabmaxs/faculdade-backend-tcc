@@ -69,17 +69,40 @@ class Recipe extends Model
     }
 
     private function baseQuery($query) {
-        return $query->join("ingredient_recipe", "recipes.id", "=", "ingredient_recipe.recipe_id")
-            ->join("ingredients", "ingredient_recipe.ingredient_id", "ingredients.id")
+        return $query->with('ingredients')
             ->select("recipes.id", "recipes.name", "recipes.image", "recipes.created_at", "recipes.updated_at", "recipes.category_id", "recipes.user_id");
     }
 
-    public function scopeSearchRecipes($query, $ingredients) {
+    private function sortRecipes($recipe, $ingredients) {
+        $numberOfIngredients = 0;
+        foreach($ingredients as $ingredientName) {
+            $hasIngredient = $recipe->ingredients->contains(function ($ingredient) use ($ingredientName) {
+                return $ingredient->name == $ingredientName;
+            });
+
+            if($hasIngredient) {
+                $numberOfIngredients++;
+                $recipe->researched_ingredients = $ingredientName;
+            }
+        }
+        return $numberOfIngredients;
+    }
+
+    public function scopeSearchRecipes($query, $request) {
         $query = $this->baseQuery($query);
-        dd($query->toSql());
+
+        if($request->has("category")) $query->where('recipes.category_id',$request->query('category'));
+        if($request->has("min_time")) $query->where('recipes.cooking_time','>=',$request->query('min_time'));
+        if($request->has("max_time")) $query->where('recipes.cooking_time','<=',$request->query('max_time'));
+
+        $recipes = $query->get();
+
+        $ingredients = $request->query("ingredients", []);
+
+        $selectedRecipes = $recipes->sortByDesc(fn($recipe) => $this->sortRecipes($recipe,$ingredients))
+            ->forPage($request->query("page",1),$request->query("limit",15))
+            ->values();
         
-        $query->whereIn("ingredients.name", $ingredients);
-        
-        return $query;
+        return $selectedRecipes;
     }
 }

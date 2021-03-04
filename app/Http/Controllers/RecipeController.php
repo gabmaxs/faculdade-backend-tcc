@@ -41,46 +41,9 @@ class RecipeController extends Controller
     }
 
     public function index(Request $request) {
-        $recipes = Recipe::join("ingredient_recipe", "recipes.id", "=", "ingredient_recipe.recipe_id")
-            ->join("ingredients", "ingredient_recipe.ingredient_id", "ingredients.id")
-            ->select("recipes.id", "recipes.name", "recipes.image", "recipes.created_at", "recipes.updated_at", "recipes.category_id", "recipes.user_id");
-
-        if($request->has("category")) $recipes->where('recipes.category_id',$request->query('category'));
-        if($request->has("min_time")) $recipes->where('recipes.cooking_time','>=',$request->query('min_time'));
-        if($request->has("max_time")) $recipes->where('recipes.cooking_time','<=',$request->query('max_time'));
-        if($request->has("ingredients")) $recipes->whereIn("ingredients.name", $request->query("ingredients"));
+        $recipes = Recipe::searchRecipes($request);
         
-        if($request->has("limit")) $recipes = $recipes->groupBy("recipes.id")->paginate($request->query("limit"));
-        else $recipes = $recipes->groupBy("recipes.id")->paginate(15);
-
         return new RecipeCollection($recipes,Recipe::message("index"));
-    }
-
-    public function index2(Request $request) {
-        $recipes = Recipe::with('ingredients')
-            ->select("recipes.id", "recipes.name", "recipes.image", "recipes.created_at", "recipes.updated_at", "recipes.category_id", "recipes.user_id")
-            ->get();
-
-        $ingredients = $request->query("ingredients", []);
-
-
-        $selectedRecipes = $recipes->sortByDesc(function ($recipe) use ($ingredients) {
-            $numberOfIngredients = 0;
-            foreach($ingredients as $ingredientName) {
-                $hasIngredient = $recipe->ingredients->contains(function ($ingredient) use ($ingredientName) {
-                    return $ingredient->name == $ingredientName;
-                });
-
-                if($hasIngredient) {
-                    $numberOfIngredients++;
-                    $recipe->researched_ingredients = $ingredientName;
-                }
-            }
-            return $numberOfIngredients;
-        })->forPage($request->query("page",1),$request->query("limit",15))->values();
-
-        
-        return new RecipeCollection($selectedRecipes,Recipe::message("index"));
     }
 
     public function storeImage(Request $request, Recipe $recipe) {
