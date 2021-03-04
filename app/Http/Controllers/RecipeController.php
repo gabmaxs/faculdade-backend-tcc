@@ -56,6 +56,30 @@ class RecipeController extends Controller
         return new RecipeCollection($recipes,Recipe::message("index"));
     }
 
+    public function index2(Request $request) {
+        $recipes = Recipe::with('ingredients')
+            ->select("recipes.id", "recipes.name", "recipes.image", "recipes.created_at", "recipes.updated_at", "recipes.category_id", "recipes.user_id")
+            ->get();
+
+        $ingredients = $request->query("ingredients", []);
+
+
+        $selectedRecipes = $recipes->sortByDesc(function ($recipe) use ($ingredients) {
+            $numberOfIngredients = 0;
+            foreach($ingredients as $ingredientName) {
+                $hasIngredient = $recipe->ingredients->contains(function ($ingredient) use ($ingredientName) {
+                    return $ingredient->name == $ingredientName;
+                });
+
+                if($hasIngredient) $numberOfIngredients++;
+            }
+            return $numberOfIngredients;
+        })->forPage($request->query("page",1),$request->query("limit",15))->values();
+
+        
+        return new RecipeCollection($selectedRecipes,Recipe::message("index"));
+    }
+
     public function storeImage(Request $request, Recipe $recipe) {
         $request->validate([
             "image" => "required|file|mimes:jpg,gif,png,jpeg|max:2048",
