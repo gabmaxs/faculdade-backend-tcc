@@ -30,6 +30,17 @@ class Recipe extends Model
         return self::$message[$text];
     }
 
+    public function getResearchedIngredientsAttribute() {
+        return $this->attributes['researched_ingredients'] ?? [];
+    }
+
+    public function setResearchedIngredientsAttribute($value) {
+        if(!isset($this->attributes['researched_ingredients']))
+            $this->attributes['researched_ingredients'] = [];
+
+        array_push($this->attributes['researched_ingredients'], $value);
+    }
+
     public function ingredients() {
         return $this->belongsToMany(Ingredient::class)->withPivot("quantity","measure");
     }
@@ -55,5 +66,52 @@ class Recipe extends Model
                 "measure" => $ingredient_array["measure"]
             ]);
         }
+    }
+
+    public function hasIngredient($ingredientName) {
+        return $this->ingredients()->get()->contains(function ($ingredient) use ($ingredientName) {
+            return $ingredient->name == $ingredientName;
+        });
+    }
+
+    private function numberOfMatchedIngredients($ingredients) {
+        $numberOfIngredients = 0;
+        foreach($ingredients as $ingredientName) {
+            if($this->hasIngredient($ingredientName)){
+                $numberOfIngredients++;
+                $this->researched_ingredients = $ingredientName;
+            }
+        }
+        return $numberOfIngredients;
+    }
+
+    public function scopeSearchRecipes($query, $request) {
+        return $query->with('ingredients')
+            ->select("recipes.id", "recipes.name", "recipes.image", "recipes.created_at", "recipes.updated_at", "recipes.category_id", "recipes.user_id");
+    }
+
+    public function scopeMinTime($query, $value) {
+        if($value > 0) 
+            return $query->where('recipes.cooking_time','>=', $value);
+        
+        return $query;
+    }
+
+    public function scopeMaxTime($query, $value) {
+        if($value > 0) 
+            return $query->where('recipes.cooking_time','<=', $value);
+        
+        return $query;
+    }
+
+    public function scopeCategory($query, $value) {
+        if($value > 0) 
+            return $query->where('recipes.category_id', $value);
+        
+        return $query;
+    }
+
+    public function scopeIngredients($query, $ingredients) {
+        return $query->get()->sortByDesc(fn($recipe) => $recipe->numberOfMatchedIngredients($ingredients));
     }
 }
