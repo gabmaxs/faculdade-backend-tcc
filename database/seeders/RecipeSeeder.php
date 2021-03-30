@@ -86,16 +86,7 @@ class RecipeSeeder extends Seeder
 
         foreach($recipes as $key => $recipe_array) {
             $recipe = Recipe::create($recipe_array);
-
-            foreach($ingredients[$key] as $ingredient_array) {
-                $ingredient = Ingredient::firstOrCreate([
-                    "name" => ucfirst($ingredient_array["name"])
-                ]);
-                $recipe->ingredients()->attach($ingredient->id, [
-                    "quantity" => $ingredient_array["quantity"],
-                    "measure" => $ingredient_array["measure"]
-                ]);
-            }
+            $recipe->saveIngredients($ingredients[$key]);
         }
     }
 }
