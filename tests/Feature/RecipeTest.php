@@ -49,9 +49,31 @@ class RecipeTest extends TestCase
         );
     }
 
-    public function testStoreRecipeData() 
+    public function testStoreRecipeImage()
     {
-        $recipe = Recipe::factory()->make();
+        Storage::fake('local');
+        $file = UploadedFile::fake()->image('image.png');
+        $user = User::factory()->create();
+        
+        $response = $this->actingAs($user)->post("api/recipe/image", ["image" => $file]);
+        $imagePath = $response->original;
+        
+        Storage::disk("local")->assertExists("recipes/tmp/{$imagePath}/" . $file->getClientOriginalName());
+        $response->assertStatus(200);
+        $this->assertDatabaseHas("temporary_files", ["folder" => $imagePath]);
+
+        return $imagePath;
+    }
+    
+    /**
+     * @depends testStoreRecipeImage
+     */
+    public function testStoreRecipeData($imagePath) 
+    {
+        Storage::fake('local');
+        $recipe = Recipe::factory()->make([
+            "image" => $imagePath
+        ]);
         $ingredient_list = Ingredient::factory(5)->make();
         $user = User::factory()->create();
 
@@ -69,6 +91,7 @@ class RecipeTest extends TestCase
                 ->where('data.number_of_servings', $recipe->number_of_servings)
                 ->where('data.cooking_time', $recipe->cooking_time)
                 ->where('data.how_to_cook', $recipe->how_to_cook)
+                ->has("data.image")
                 ->has('data.ingredients', $ingredient_list->count(), fn($json) => 
                     $json->where('name', ucfirst($ingredient_list[0]->name))
                         ->where('quantity', $ingredient_list[0]->quantity)
@@ -76,31 +99,6 @@ class RecipeTest extends TestCase
                 )
                 ->etc()
         );
-
-        $recipe_id = $response->original->id;
-
-        return $recipe_id;
-    }
-
-    /**
-     * @depends testStoreRecipeData
-     */
-    public function testStoreRecipeImage($recipe_id)
-    {
-        Storage::fake('public');
-        $file = UploadedFile::fake()->image('image.png');
-        $user = User::factory()->create();
-        
-        $response = $this->actingAs($user)->post("api/recipe/{$recipe_id}/image", ["image" => $file]);
-        
-        Storage::disk("public")->assertExists("recipes/" . $file->hashName());
-        $response->assertStatus(201);
-        $response->assertJson(fn (AssertableJson $json) => 
-            $json->where("success", true)
-                ->where("message", "Imagem da receita salva")
-                ->where("data.id", $recipe_id)
-                ->where("data.image", env("APP_URL")."/storage/recipes/" . $file->hashName())
-                ->etc()
-        );
+        $this->assertDatabaseMissing("temporary_files", ["folder" => $imagePath]);
     }
 }
