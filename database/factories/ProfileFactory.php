@@ -22,7 +22,9 @@ class ProfileFactory extends Factory
     public function definition()
     {
         return [
-            //
+            "culinary_level" => $this->faker->numberBetween(1,5), 
+            "gender" => $this->faker->randomElement(["M", "F"]), 
+            "photo" => "/path/to/photo"
         ];
     }
 }
