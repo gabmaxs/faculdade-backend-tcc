@@ -50,7 +50,7 @@ class Recipe extends Model
     }
 
     public function saveImage(UploadedFile $image) {
-        $path = $image->store("public/recipes");
+        $path = $image->store("recipes", "public");
 
         $this->attributes['image'] = env("APP_URL").Storage::url($path);
         $this->save();
