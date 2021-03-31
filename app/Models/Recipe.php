@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Http\File;
 
 class Recipe extends Model
 {
@@ -49,11 +50,15 @@ class Recipe extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function saveImage(UploadedFile $image) {
-        $path = $image->store("recipes", "public");
+    public function saveImage($folder, $file) {
+        if(Storage::disk("local")->exists($folder.$file)) {
+            $path = Storage::putFile("public/recipes", new File(Storage::path($folder.$file)));
+    
+            $this->attributes['image'] = env("APP_URL").Storage::url($path);
+            $this->save();
 
-        $this->attributes['image'] = env("APP_URL").Storage::url($path);
-        $this->save();
+            Storage::deleteDirectory($folder);
+        }
     }
 
     public function saveIngredients($list_of_ingredients) {

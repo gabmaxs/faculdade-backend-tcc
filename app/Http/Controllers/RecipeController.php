@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\Ingredient;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\Recipe as RecipeResource;
 use App\Http\Resources\RecipeCollection;
+use App\Models\TemporaryFile;
 
 class RecipeController extends Controller
 {
@@ -21,6 +21,7 @@ class RecipeController extends Controller
             "how_to_cook" => "required|array|max:2000",
             "category_id" => "required|numeric",
             "list_of_ingredients" => "required|array|max:2000",
+            "image" => "required|string"
         ]);
 
         $recipe = $user->recipes()->create([
@@ -31,6 +32,11 @@ class RecipeController extends Controller
             "category_id" => $request->category_id,
         ]);
         $recipe->saveIngredients($request->get('list_of_ingredients'));
+        $temporaryFile = TemporaryFile::where("folder", $request->image)->first();
+        if($temporaryFile) {
+            $recipe->saveImage("recipes/tmp/{$request->image}/", $temporaryFile->filename);
+            $temporaryFile->delete();
+        }
 
         return (new RecipeResource($recipe,Recipe::message("created")))->response()->setStatusCode(201);
     }
@@ -50,14 +56,5 @@ class RecipeController extends Controller
             ->values();
         
         return new RecipeCollection($recipes,Recipe::message("index"));
-    }
-
-    public function storeImage(Request $request, Recipe $recipe) {
-        $request->validate([
-            "image" => "required|file|mimes:jpg,gif,png,jpeg|max:2048",
-        ]);
-
-        $recipe->saveImage($request->file("image"));
-        return (new RecipeResource($recipe,Recipe::message("image")))->response()->setStatusCode(201);
     }
 }

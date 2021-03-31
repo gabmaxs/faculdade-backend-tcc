@@ -26,7 +26,7 @@ Route::middleware(["auth:api"])->group(function () {
     Route::put("user/profile", "ProfileController@update");
     Route::get("user/profile", "ProfileController@show");
     Route::post("recipe", "RecipeController@store");
-    Route::post("recipe/{recipe}/image", "RecipeController@storeImage");
+    Route::post("recipe/image", "TemporaryFileController@upload");
 });
 
 Route::get("recipe", "RecipeController@index");
