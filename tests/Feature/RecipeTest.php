@@ -21,15 +21,16 @@ class RecipeTest extends TestCase
         $response = $this->getJson('/api/recipe');
 
         $response->assertStatus(200);
-        $response->assertJson(fn (AssertableJson $json) => 
-            $json->where('success', true)
+        $response->assertJson(function (AssertableJson $json) use ($recipes) { 
+            return $json->where('success', true)
                 ->where('message', "Receitas recuperadas")
                 // ->has("data", $recipes->count())
-                ->has("data.0", fn($json) => 
-                    $json->where('id', $recipes[0]->id)   
+                ->has("data.0", function($json) use ($recipes) { 
+                    return $json->where('id', $recipes[0]->id)   
                         ->where('name', $recipes[0]->name) 
-                        ->etc()
-                )
+                        ->etc();
+                });
+            }
         );
     }
 
@@ -40,13 +41,13 @@ class RecipeTest extends TestCase
         $response = $this->getJson("/api/recipe/{$recipe->id}");
 
         $response->assertStatus(200);
-        $response->assertJson(fn (AssertableJson $json) => 
-            $json->where('success', true)
+        $response->assertJson(function (AssertableJson $json) use ($recipe) { 
+            return $json->where('success', true)
                 ->where('message', "Receita recuperada")
                 ->where('data.id', 1)
                 ->where('data.name', $recipe->name)
-                ->etc()
-        );
+                ->etc();
+        });
     }
 
     public function testStoreRecipeImage()
@@ -82,8 +83,8 @@ class RecipeTest extends TestCase
         $response = $this->actingAs($user, 'api')->postJson("api/recipe", $data);
 
         $response->assertStatus(201);
-        $response->assertJson(fn (AssertableJson $json) => 
-            $json->where('success', true)
+        $response->assertJson(function (AssertableJson $json) use ($recipe, $ingredient_list, $user) { 
+            return $json->where('success', true)
                 ->where('message', "Receita salva")
                 ->where('data.name', $recipe->name)
                 ->where('data.category_id', $recipe->category_id)
@@ -92,13 +93,13 @@ class RecipeTest extends TestCase
                 ->where('data.cooking_time', $recipe->cooking_time)
                 ->where('data.how_to_cook', $recipe->how_to_cook)
                 ->has("data.image")
-                ->has('data.ingredients', $ingredient_list->count(), fn($json) => 
-                    $json->where('name', ucfirst($ingredient_list[0]->name))
+                ->has('data.ingredients', $ingredient_list->count(), function ($json) use ($ingredient_list) {
+                    return $json->where('name', ucfirst($ingredient_list[0]->name))
                         ->where('quantity', $ingredient_list[0]->quantity)
-                        ->where('measure', $ingredient_list[0]->measure)
-                )
-                ->etc()
-        );
+                        ->where('measure', $ingredient_list[0]->measure);
+                })
+                ->etc();
+        });
         $this->assertDatabaseMissing("temporary_files", ["folder" => $imagePath]);
     }
 }

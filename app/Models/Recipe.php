@@ -117,6 +117,6 @@ class Recipe extends Model
     }
 
     public function scopeIngredients($query, $ingredients) {
-        return $query->get()->sortByDesc(fn($recipe) => $recipe->numberOfMatchedIngredients($ingredients));
+        return $query->get()->sortByDesc(function ($recipe) use ($ingredients) { return $recipe->numberOfMatchedIngredients($ingredients);});
     }
 }
