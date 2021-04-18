@@ -1,0 +1,13 @@
+{
+    "type": "service_account",
+    "project_id": "icook-cloud",
+    "private_key_id": "e4f1790b170abfa410799c50ec938f82ff1f391f",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCi5pFPiN3N7QMZ\nV8+BEuMbrjyC+HjAHqhDLj/eNwvXsbL+hXQa57mbbRlsVXn2lRLwvx3GicwHrn/H\neLfiS5Eda/pUnmyuNcQVc8kfwSd7+WQ9rg61I6ddvyHisXevidwYMnHdw9tD/eEE\n8cVITZt/ZxfSCEKe3yfdREqNvUthFnVJOtzTko5gBlMxxtdfIlhT1o0dZ1THf5sH\nFFvCc4rVu4CM43eYefUfdjUFE3k+UlRl0/Kpdt7yy69n54N4HARSaXpAya6caOeO\niqN4Its2T0+9wHEkigs1VS++7PpPfU2M6ANqCOYNRR5MkhXDEwEk6839wqnP1Fjt\nCdDBcdABAgMBAAECggEAAPlwFRG0ge7Q/e3Qh+0c/qVkJ0RlNID6cKxuJV4e7ANc\nFrmloCOSsKNOa593Q0pQ+q+p9e4NEl6w1Pib4Paiv5JNxQPNkp0vtxEiOtZk7hDn\n0Jah7+NutNjX0wtMs/gXIO3sUG9DeHykQ+tOSshsDa8ILXFvNJQRIPmvmHlxYftF\n9tzbxAorZpvR+NKx1Tv8LM3KUGEKKox1JMTSROAX4NA8JonmJlfGEKVscEL9BXzS\nqA0yFogI4sgiLJHUTWjPdRFVT4LmjSU++ZixOq0rjJpS+yfuAgklV54JB39MDNDZ\nIcFvkKrU4PiutASGeohbBA+j5V6+OlxM+HW+wPPZgQKBgQDPCBDQ2jibTSFn4wEV\nt0r4iKxtwZT9u6hTrxAFAWfJsSNpueKn5XqA4tt+GjfJMjT8UbySj6Xn3btLyPRH\nwvvvnX218sljy4TOgF1MHEgtk/OA9KbhBK9+PaGLhPgzd272+zV7VrPODZFeV8v1\nKXEeVe0JUYyuT+xRoNCX1MKu5QKBgQDJbldZwTr3ykKUrv19yJz8A1m4EH0WAkpr\nHUOpPOQUJIUshejZ/X8wC05ARAx7fdlU5SrgR3NODyx/5XqAH4Aq/YwsPjCT7cIP\nXMMBkST61/4J5ou93Hzqgo6l1npL/qcwTBooqUcF13+3qYXNn55DMIaiDcCxotOR\nQABEOVnu7QKBgDG4MymlLrEFTf+AAdOwSD31vMtDET/6YEtwoH1DQCSs+N88OBWw\nQ8JOOP5I15rnBtiN3Kap/uL3WjKyGRBe4FhET1tx6jGgP83EACP2KtNfU7xlhOpH\nUMoVjQVPsrfReAGyhL6RLO9QTNgGZ8IB6NurMRjqz8lRAmT8JPxBqVuNAoGBAK/V\no2jVVd1icTaLfvrjOa6AWjxkIF0rCL1yYVMFtW+j5aDVEEvijrlo1RkijebrF+GU\n3xXDKXNVqZnHv2TCmsZsaIVikFNBtCpm5k+i3S4fiEIqP4gwRdcMuusnS8C0/ksZ\n06f1BOujj3jLAeNaV/P9Ezm5WaF3KspbnR/xFIGNAoGAcYnscC1P5kfobk01p+t8\nGO/ODLsRTw/nt48RIV8N+tV2UcEB0R70cSLVlgKqEEV0AW5A3hD3RK/NUdg72esb\n6whmcTsAb8t6x6+wvFXL4Wn2cjaQjiwU/a7QokSn3XGjG7IsjfAajPVJjW78kEXM\nV6KQXSZfmGmogUBFTI0sQ30=\n-----END PRIVATE KEY-----\n",
+    "client_email": "firebase-adminsdk-61xw4@icook-cloud.iam.gserviceaccount.com",
+    "client_id": "108007793227216761381",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-61xw4%40icook-cloud.iam.gserviceaccount.com"
+  }
+  

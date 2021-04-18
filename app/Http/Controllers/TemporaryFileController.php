@@ -16,7 +16,14 @@ class TemporaryFileController extends Controller
             $file = $request->file("image");
             $filename = $file->getClientOriginalName();
             $folder = uniqid() . "-" . now()->timestamp;
-            $file->storeAs('recipes/tmp/' . $folder, $filename);
+            // $file->storeAs('recipes/tmp/' . $folder, $filename);
+
+            // STORE LOCAL
+            // $this->storeLocal($file, 'recipes/tmp/' . $folder, $filename);
+
+            // STORE FIREBASE
+            $this->storeFirebase($file, 'recipes/tmp/' . $folder, $filename);
+
 
             TemporaryFile::create([
                 "folder" => $folder,
@@ -27,5 +34,17 @@ class TemporaryFileController extends Controller
         }
 
         return "";
+    }
+
+    private function storeLocal($file, $folder, $filename) {
+        $file->storeAs($folder, $filename);
+    }
+
+    private function storeFirebase($file, $folder, $filename) {
+        $storage = app('firebase.storage');
+        $storage->getBucket()->upload(fopen($file->getRealPath(), "r"), [
+            "name" => $folder . "/" . $filename,
+            "predefinedAcl" => "publicRead"
+        ]);
     }
 }

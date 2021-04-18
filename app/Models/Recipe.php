@@ -51,13 +51,30 @@ class Recipe extends Model
     }
 
     public function saveImage($folder, $file) {
-        if(Storage::disk("local")->exists($folder.$file)) {
-            $path = Storage::putFile("public/recipes", new File(Storage::path($folder.$file)));
+        // LOCAL UPLOAD
+        // if(Storage::disk("local")->exists($folder.$file)) {
+        //     $path = Storage::putFile("public/recipes", new File(Storage::path($folder.$file)));
     
-            $this->attributes['image'] = env("APP_URL").Storage::url($path);
+        //     $this->attributes['image'] = env("APP_URL").Storage::url($path);
+        //     $this->save();
+
+        //     Storage::deleteDirectory($folder);
+        // }
+
+        // FIREBASE UPLOAD
+        $storage = app('firebase.storage');
+        $bucket = $storage->getBucket();
+        $object = $bucket->object($folder.$file);
+        if($object->exists()) {
+            $object->copy($bucket, [
+                "name" => "public/recipes/".$file,
+                "predefinedAcl" => "publicRead"
+            ]);
+
+            $this->attributes['image'] = "https://firebasestorage.googleapis.com/v0/b/icook-cloud.appspot.com/o/public%2Frecipes%2F{$file}?alt=media";
             $this->save();
 
-            Storage::deleteDirectory($folder);
+            $object->delete();
         }
     }
 
