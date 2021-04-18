@@ -4,9 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Http\File;
 
 class Recipe extends Model
 {
@@ -51,16 +48,6 @@ class Recipe extends Model
     }
 
     public function saveImage($folder, $file) {
-        // LOCAL UPLOAD
-        // if(Storage::disk("local")->exists($folder.$file)) {
-        //     $path = Storage::putFile("public/recipes", new File(Storage::path($folder.$file)));
-    
-        //     $this->attributes['image'] = env("APP_URL").Storage::url($path);
-        //     $this->save();
-
-        //     Storage::deleteDirectory($folder);
-        // }
-
         // FIREBASE UPLOAD
         $storage = app('firebase.storage');
         $bucket = $storage->getBucket();

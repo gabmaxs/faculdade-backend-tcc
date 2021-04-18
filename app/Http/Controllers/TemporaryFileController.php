@@ -16,10 +16,6 @@ class TemporaryFileController extends Controller
             $file = $request->file("image");
             $filename = $file->getClientOriginalName();
             $folder = uniqid() . "-" . now()->timestamp;
-            // $file->storeAs('recipes/tmp/' . $folder, $filename);
-
-            // STORE LOCAL
-            // $this->storeLocal($file, 'recipes/tmp/' . $folder, $filename);
 
             // STORE FIREBASE
             $this->storeFirebase($file, 'recipes/tmp/' . $folder, $filename);
