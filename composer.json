@@ -12,9 +12,11 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "lcobucci/jwt": "3.4.1",
+        "gabmaxs/jwt-auth": "1.0.3",
+        "kreait/laravel-firebase": "^3.1",
         "laravel/framework": "^8.12",
-        "laravel/tinker": "^2.5",
-        "tymon/jwt-auth": "^1.0"
+        "laravel/tinker": "^2.5"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

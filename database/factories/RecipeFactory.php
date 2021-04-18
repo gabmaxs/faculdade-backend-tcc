@@ -36,6 +36,6 @@ class RecipeFactory extends Factory
     public function configure()
     {
         $ingredients_list = Ingredient::factory($this->faker->randomDigitNotNull())->make()->toArray();
-        return $this->afterCreating( fn(Recipe $recipe) => $recipe->saveIngredients($ingredients_list));
+        return $this->afterCreating( function (Recipe $recipe) use ($ingredients_list) { return $recipe->saveIngredients($ingredients_list); });
     }
 }
