@@ -28,15 +28,15 @@ class Recipe extends Model
         return self::$message[$text];
     }
 
-    public function getResearchedIngredientsAttribute() {
-        return $this->attributes['researched_ingredients'] ?? [];
+    public function getMatchedIngredientsAttribute() {
+        return $this->attributes['matched_ingredients'] ?? [];
     }
 
-    public function setResearchedIngredientsAttribute($value) {
-        if(!isset($this->attributes['researched_ingredients']))
-            $this->attributes['researched_ingredients'] = [];
+    public function setMatchedIngredientsAttribute($value) {
+        if(!isset($this->attributes['matched_ingredients']))
+            $this->attributes['matched_ingredients'] = [];
 
-        array_push($this->attributes['researched_ingredients'], $value);
+        array_push($this->attributes['matched_ingredients'], $value);
     }
 
     public function ingredients() {
@@ -88,15 +88,14 @@ class Recipe extends Model
         foreach($ingredients as $ingredientName) {
             if($this->hasIngredient($ingredientName)){
                 $numberOfIngredients++;
-                $this->researched_ingredients = $ingredientName;
+                $this->matched_ingredients = $ingredientName;
             }
         }
         return $numberOfIngredients;
     }
 
-    public function scopeSearchRecipes($query, $request) {
-        return $query->with('ingredients')
-            ->select("recipes.id", "recipes.name", "recipes.image", "recipes.created_at", "recipes.updated_at", "recipes.category_id", "recipes.user_id");
+    public function scopeSearchRecipes($query) {
+        return $query->select("recipes.id", "recipes.name", "recipes.image", "recipes.created_at", "recipes.updated_at", "recipes.category_id", "recipes.user_id");
     }
 
     public function scopeMinTime($query, $value) {
@@ -120,7 +119,17 @@ class Recipe extends Model
         return $query;
     }
 
-    public function scopeIngredients($query, $ingredients) {
-        return $query->get()->sortByDesc(function ($recipe) use ($ingredients) { return $recipe->numberOfMatchedIngredients($ingredients);});
+    public function scopeWithIngredients($query, $ingredients = []) {
+        $data = $query->with('ingredients')->get()->sortByDesc(function ($recipe) use ($ingredients) { 
+            return $recipe->numberOfMatchedIngredients($ingredients);
+        });
+        
+        if(!empty($ingredients)) {
+            return $data->filter(function ($recipe) {
+                return isset($recipe->attributes["matched_ingredients"]);
+            });
+        }
+
+        return $data;
     }
 }

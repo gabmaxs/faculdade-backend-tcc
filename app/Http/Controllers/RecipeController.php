@@ -47,14 +47,14 @@ class RecipeController extends Controller
     }
 
     public function index(Request $request) {
-        $recipes = Recipe::searchRecipes($request)
+        $recipes = Recipe::searchRecipes()
             ->minTime($request->query('min_time', 0))
             ->maxTime($request->query('max_time', 0))
             ->category($request->query('category', 0))
-            ->ingredients($request->query("ingredients", []))
+            ->withIngredients($request->query("ingredients", []))
             ->forPage($request->query("page",1),$request->query("limit",15))
             ->values();
         
-        return new RecipeCollection($recipes,Recipe::message("index"));
+        return new RecipeCollection($recipes,Recipe::message("index"), $request->query("ingredients", []));
     }
 }
