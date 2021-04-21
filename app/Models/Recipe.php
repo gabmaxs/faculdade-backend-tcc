@@ -58,7 +58,7 @@ class Recipe extends Model
                 "predefinedAcl" => "publicRead"
             ]);
 
-            $this->attributes['image'] = "https://firebasestorage.googleapis.com/v0/b/icook-cloud.appspot.com/o/public%2Frecipes%2F{$file}?alt=media";
+            $this->attributes['image'] = env('STORAGE_URL') . "/public%2Frecipes%2F{$file}?alt=media";
             $this->save();
 
             $object->delete();
