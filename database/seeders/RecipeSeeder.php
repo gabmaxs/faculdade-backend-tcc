@@ -18,7 +18,7 @@ class RecipeSeeder extends Seeder
         $recipes = [
             [
                 "name" => "Limonada",
-                "image" => env("APP_URL")."/storage/recipes/default.png",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Flimonada.jpeg?alt=media",
                 "number_of_servings" => 4,
                 "cooking_time" => 5,
                 "how_to_cook" => [
@@ -32,7 +32,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Suco de laranja",
-                "image" => env("APP_URL")."/storage/recipes/default.png",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Flaranja.png?alt=media",
                 "number_of_servings" => 4,
                 "cooking_time" => 15,
                 "how_to_cook" => [

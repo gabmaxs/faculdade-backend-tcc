@@ -24,7 +24,7 @@ class RecipeFactory extends Factory
     {
         return [
             "name" => $this->faker->word(), 
-            "image" => "", 
+            "image" => env("STORAGE_URL")."/public%2Fdefault.png?alt=media", 
             "number_of_servings" => $this->faker->numberBetween(1,10), 
             "cooking_time" => $this->faker->randomNumber(2), 
             "how_to_cook" => $this->faker->sentences(5), 
