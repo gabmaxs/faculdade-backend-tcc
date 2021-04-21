@@ -52,6 +52,8 @@ class RecipeTest extends TestCase
 
     public function testStoreRecipeImage()
     {
+        $this->markTestSkipped('must be revisited.');
+
         Storage::fake('local');
         $file = UploadedFile::fake()->image('image.png');
         $user = User::factory()->create();

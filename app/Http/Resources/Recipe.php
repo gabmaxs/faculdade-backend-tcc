@@ -28,8 +28,8 @@ class Recipe extends JsonResource
             'image' => $this->image,
             'category_id' => $this->category_id,
             'user_id' => $this->user_id,
-            $this->mergeWhen($this->researched_ingredients, [
-                'researched_ingredients' => $this->researched_ingredients,
+            $this->mergeWhen($this->matched_ingredients, [
+                'matched_ingredients' => $this->matched_ingredients,
             ]),
             $this->mergeWhen($this->number_of_servings != null, [
                 'number_of_servings' => $this->number_of_servings,
