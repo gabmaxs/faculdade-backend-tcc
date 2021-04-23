@@ -44,7 +44,7 @@ class ProfileController extends Controller
     public function show()
     {
         $user = auth()->user();
-        return new UserResource($user, "Usuário recuperada com sucesso");
+        return new UserResource($user, "Usuário recuperado");
     }
 
     /**
