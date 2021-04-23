@@ -29,11 +29,18 @@ class User extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            $this->mergeWhen($profile, [
-                "culinary_level" => $profile->culinary_level, 
-                "gender" => $profile->gender, 
-                "photo" => $profile->photo
+            $this->mergeWhen(isset($profile->culinary_level), [
+                "culinary_level" => $profile->culinary_level ?? null, 
+                "gender" => $profile->gender ?? null, 
+                "photo" => $profile->photo ?? null
             ]),
+        ];
+    }
+
+    public function with($request) {
+        return [
+            "success" => true,
+            "message" => $this->text
         ];
     }
 }

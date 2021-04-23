@@ -32,8 +32,8 @@ class UserFactory extends Factory
         ];
     }
 
-    public function configure()
-    {
-        return $this->afterCreating(function (User $user) { return $user->profile()->save(Profile::factory()->make()); });
-    }
+    // public function configure()
+    // {
+    //     return $this->afterCreating(function (User $user) { return $user->profile()->save(Profile::factory()->make()); });
+    // }
 }

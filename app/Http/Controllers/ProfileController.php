@@ -22,7 +22,7 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         $request->validate([
-            'culinary_level' => 'required|max:10|numeric',
+            'culinary_level' => 'required|max:5|numeric',
             'gender' => 'required|string|max:255',
             'photo' => 'nullable',
         ]);
@@ -44,7 +44,7 @@ class ProfileController extends Controller
     public function show()
     {
         $user = auth()->user();
-        return new UserResource($user, "Usuário recuperada com sucesso");
+        return new UserResource($user, "Usuário recuperado");
     }
 
     /**
@@ -59,18 +59,16 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         $request->validate([
-            'culinary_level' => 'required|max:10|numeric',
+            'culinary_level' => 'required|max:5|numeric',
             'gender' => 'required|string|max:255',
             'photo' => 'nullable',
+            'name' => "required|max:255|string"
         ]);
 
-        $profile = $user->profile;
-        $profile->fill([
-            "culinary_level" => $request->culinary_level,
-            "gender" => $request->gender
-        ]);
-        $profile->save();
+        $user->fill($request->only("name"));
+        $user->save();
+        $user->profile()->updateOrCreate($request->only("culinary_level", "gender", "photo"));
 
-        return new UserResource($user, "Perfil atualizado com sucesso");
+        return new UserResource($user, "Perfil atualizado");
     }
 }

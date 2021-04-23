@@ -26,6 +26,7 @@ class RecipeSearchTest extends TestCase
                 ->has("data.0", function($json) { 
                     return $json->where('name', "Suco de laranja") 
                         ->where("matched_ingredients", ["Laranja"])
+                        ->where("total_ingredients", 3)
                         ->etc();
                 });
             }
@@ -48,11 +49,13 @@ class RecipeSearchTest extends TestCase
                 ->has("data.0", function($json) { 
                     return $json->where('name', "Suco de laranja") 
                         ->where("matched_ingredients", ["Laranja", "Água"])
+                        ->where("total_ingredients", 3)
                         ->etc();
                 })
                 ->has("data.1", function($json) { 
                     return $json->where('name', "Limonada") 
                         ->where("matched_ingredients", ["Água"])
+                        ->where("total_ingredients", 3)
                         ->etc();
                 });
             }
