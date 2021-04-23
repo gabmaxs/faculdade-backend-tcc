@@ -54,7 +54,7 @@ class ProfileController extends Controller
      * @param  \App\Models\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Profile $profile)
+    public function update(Request $request)
     {
         $user = auth()->user();
 
@@ -67,8 +67,8 @@ class ProfileController extends Controller
 
         $user->fill($request->only("name"));
         $user->save();
-        $user->profile()->updateOrCreate($request->only("culinary_level", "gender", "photo"));
-
+        $user->profile()->updateOrCreate(["user_id" => $user->id], $request->only("culinary_level", "gender", "photo"));
+        
         return new UserResource($user, "Perfil atualizado");
     }
 }
