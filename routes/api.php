@@ -34,6 +34,14 @@ Route::get("recipe/{recipe}", "RecipeController@show");
 Route::get("category", "CategoryController@index");
 Route::get("category/{category}","CategoryController@show");
 
+Route::get("measure", function () {
+    return response()->json([
+        "success" => true,
+        "data" => config("measures.available"),
+        "message" => "Unidades de medidas recuperadas"
+    ]);
+});
+
 Route::fallback(function () {
     return response()->json([
         "success" => false,

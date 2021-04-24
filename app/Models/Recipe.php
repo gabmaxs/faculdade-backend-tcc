@@ -68,18 +68,18 @@ class Recipe extends Model
     public function saveIngredients($list_of_ingredients) {
         foreach($list_of_ingredients as $ingredient_array) {
             $ingredient = Ingredient::firstOrCreate([
-                "name" => ucfirst($ingredient_array["name"])
+                "name" => strtolower($ingredient_array["name"])
             ]);
             $this->ingredients()->attach($ingredient->id, [
                 "quantity" => $ingredient_array["quantity"],
-                "measure" => $ingredient_array["measure"]
+                "measure" => strtolower($ingredient_array["measure"])
             ]);
         }
     }
 
     public function hasIngredient($ingredientName) {
         return $this->ingredients()->get()->contains(function ($ingredient) use ($ingredientName) {
-            return $ingredient->name == $ingredientName;
+            return $ingredient->name == strtolower($ingredientName);
         });
     }
 

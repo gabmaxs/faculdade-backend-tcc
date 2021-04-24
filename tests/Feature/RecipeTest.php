@@ -71,7 +71,7 @@ class RecipeTest extends TestCase
     /**
      * @depends testStoreRecipeImage
      */
-    public function testStoreRecipeData($imagePath) 
+    public function testStoreRecipeDataWithImage($imagePath) 
     {
         Storage::fake('local');
         $recipe = Recipe::factory()->make([
@@ -103,5 +103,34 @@ class RecipeTest extends TestCase
                 ->etc();
         });
         $this->assertDatabaseMissing("temporary_files", ["folder" => $imagePath]);
+    }
+
+    public function testStoreRecipeDataWithoutImage() 
+    {
+        $recipe = Recipe::factory()->make();
+        $ingredient_list = Ingredient::factory(5)->make();
+        $user = User::factory()->create();
+
+        $data = array_merge($recipe->toArray(), ["list_of_ingredients" => $ingredient_list->toArray()]);
+
+        $response = $this->actingAs($user, 'api')->postJson("api/recipe", $data);
+
+        $response->assertStatus(201);
+        $response->assertJson(function (AssertableJson $json) use ($recipe, $ingredient_list, $user) { 
+            return $json->where('success', true)
+                ->where('message', "Receita salva")
+                ->where('data.name', $recipe->name)
+                ->where('data.category_id', $recipe->category_id)
+                ->where('data.user_id', $user->id)
+                ->where('data.number_of_servings', $recipe->number_of_servings)
+                ->where('data.cooking_time', $recipe->cooking_time)
+                ->where('data.how_to_cook', $recipe->how_to_cook)
+                ->has('data.ingredients', $ingredient_list->count(), function ($json) use ($ingredient_list) {
+                    return $json->where('name', strtolower($ingredient_list[0]->name))
+                        ->where('quantity', $ingredient_list[0]->quantity)
+                        ->where('measure', strtolower($ingredient_list[0]->measure));
+                })
+                ->etc();
+        });
     }
 }
