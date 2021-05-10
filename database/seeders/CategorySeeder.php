@@ -25,6 +25,7 @@ class CategorySeeder extends Seeder
             ["name" => "Peixes e Frutos do Mar"],
             ["name" => "Saladas e Molhos"],
             ["name" => "Sopas"],
+            ["name" => "Acompanhamentos"]
         ];
         foreach($categories as $category) {
             Category::create($category);
