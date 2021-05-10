@@ -79,7 +79,7 @@ class Recipe extends Model
 
     public function hasIngredient($ingredientName) {
         return $this->ingredients()->get()->contains(function ($ingredient) use ($ingredientName) {
-            return $ingredient->name == strtolower($ingredientName);
+            return is_int(strpos($ingredient->name, strtolower($ingredientName)));
         });
     }
 
