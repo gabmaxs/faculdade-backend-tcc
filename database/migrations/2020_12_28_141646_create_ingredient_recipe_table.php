@@ -17,7 +17,7 @@ class CreateIngredientRecipeTable extends Migration
             $table->id();
             $table->bigInteger("ingredient_id");
             $table->bigInteger("recipe_id");
-            $table->integer("quantity");
+            $table->double("quantity", 4, 2);
             $table->string("measure");
             $table->timestamps();
         });
