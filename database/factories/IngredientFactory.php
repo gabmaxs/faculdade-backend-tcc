@@ -24,14 +24,7 @@ class IngredientFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'quantity' => $this->faker->numberBetween(2, 30),
-            'measure' => $this->faker->randomElement([
-                "Litro",
-                "Unidade",
-                "Xícara",
-                "Colher de chá",
-                "Colher de sopa",
-                "Gramas"
-            ])
+            'measure' => $this->faker->randomElement(config("measures.available"))
         ];
     }
 }

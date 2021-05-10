@@ -29,10 +29,18 @@ Route::middleware(["auth:api"])->group(function () {
 });
 
 Route::post("recipe/image", "TemporaryFileController@upload");
-Route::get("recipe", "RecipeController@index");
+Route::get("recipe", "RecipeController@index")->name("search");
 Route::get("recipe/{recipe}", "RecipeController@show");
 Route::get("category", "CategoryController@index");
 Route::get("category/{category}","CategoryController@show");
+
+Route::get("measure", function () {
+    return response()->json([
+        "success" => true,
+        "data" => config("measures.available"),
+        "message" => "Unidades de medidas recuperadas"
+    ]);
+});
 
 Route::fallback(function () {
     return response()->json([

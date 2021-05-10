@@ -15,7 +15,7 @@ class RecipeSearchTest extends TestCase
             "ingredients" => ["Laranja"]
         ];
 
-        $response = $this->getJson(route("generated::eVmOnpgKjtLfinxU", $query));
+        $response = $this->getJson(route("search", $query));
 
         $response->assertStatus(200);
         $response->assertJson(function (AssertableJson $json) { 
@@ -38,7 +38,7 @@ class RecipeSearchTest extends TestCase
             "ingredients" => ["Laranja", "Água"]
         ];
 
-        $response = $this->getJson(route("generated::eVmOnpgKjtLfinxU", $query));
+        $response = $this->getJson(route("search", $query));
 
         $response->assertStatus(200);
         $response->assertJson(function (AssertableJson $json) { 

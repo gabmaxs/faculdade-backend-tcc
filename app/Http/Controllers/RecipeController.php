@@ -8,6 +8,7 @@ use App\Models\Ingredient;
 use App\Http\Resources\Recipe as RecipeResource;
 use App\Http\Resources\RecipeCollection;
 use App\Models\TemporaryFile;
+use Illuminate\Validation\Rule;
 
 class RecipeController extends Controller
 {
@@ -21,6 +22,9 @@ class RecipeController extends Controller
             "how_to_cook" => "required|array|max:2000",
             "category_id" => "required|numeric",
             "list_of_ingredients" => "required|array|max:2000",
+            "list_of_ingredients.*.name" => "required|string|max:255",
+            "list_of_ingredients.*.quantity" => "required|numeric",
+            "list_of_ingredients.*.measure" => "required|string|max:255|" . Rule::in(config("measures.available")),
             "image" => "required|string"
         ]);
 
