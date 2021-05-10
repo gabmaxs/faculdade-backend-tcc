@@ -29,7 +29,7 @@ Route::middleware(["auth:api"])->group(function () {
 });
 
 Route::post("recipe/image", "TemporaryFileController@upload");
-Route::get("recipe", "RecipeController@index");
+Route::get("recipe", "RecipeController@index")->name("search");
 Route::get("recipe/{recipe}", "RecipeController@show");
 Route::get("category", "CategoryController@index");
 Route::get("category/{category}","CategoryController@show");
