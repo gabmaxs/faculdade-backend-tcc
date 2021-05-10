@@ -80,7 +80,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Salada de legumes",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fsaladalegumes.jpg?alt=media",
                 "number_of_servings" => 8,
                 "cooking_time" => 30,
                 "how_to_cook" => [
@@ -123,7 +123,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Salada de batata com maionese",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fsaladabatata.jpg?alt=media",
                 "number_of_servings" => 4,
                 "cooking_time" => 30,
                 "how_to_cook" => [
@@ -158,7 +158,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Salada tropical",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fsaladatropical.jpg?alt=media",
                 "number_of_servings" => 8,
                 "cooking_time" => 40,
                 "how_to_cook" => [
@@ -213,7 +213,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Carne de panela",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fcarnepanela.jpg?alt=media",
                 "number_of_servings" => 8,
                 "cooking_time" => 40,
                 "how_to_cook" => [
@@ -265,7 +265,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Escondidinho de frango",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fescondidnhofrango.jpg?alt=media",
                 "number_of_servings" => 8,
                 "cooking_time" => 60,
                 "how_to_cook" => [
@@ -319,7 +319,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Estrogonofe",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Festrogonofe.jpg?alt=media",
                 "number_of_servings" => 8,
                 "cooking_time" => 40,
                 "how_to_cook" => [
@@ -378,7 +378,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Purê de batatas",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fpurebatata.jpg?alt=media",
                 "number_of_servings" => 8,
                 "cooking_time" => 40,
                 "how_to_cook" => [
@@ -419,7 +419,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Arroz branco",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Farrozbranco.jpg?alt=media",
                 "number_of_servings" => 4,
                 "cooking_time" => 20,
                 "how_to_cook" => [
@@ -460,7 +460,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Feijão tropeiro",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Ffeijãotropeiro.jpg?alt=media",
                 "number_of_servings" => 4,
                 "cooking_time" => 40,
                 "how_to_cook" => [],
@@ -511,7 +511,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Pudim de leite condensado",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fpudim.jpg?alt=media",
                 "number_of_servings" => 8,
                 "cooking_time" => 60,
                 "how_to_cook" => [
@@ -553,7 +553,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Torta de bis",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Ftortabis.jpg?alt=media",
                 "number_of_servings" => 10,
                 "cooking_time" => 40,
                 "how_to_cook" => [
@@ -583,7 +583,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Molho pesto",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fpesto.jpg?alt=media",
                 "number_of_servings" => 20,
                 "cooking_time" => 20,
                 "how_to_cook" => [],
@@ -624,7 +624,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Molho branco",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fmolhobranco.jpg?alt=media",
                 "number_of_servings" => 4,
                 "cooking_time" => 15,
                 "how_to_cook" => [
@@ -670,7 +670,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Pão de queijo",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fpaodequeijo.jpg?alt=media",
                 "number_of_servings" => 18,
                 "cooking_time" => 50,
                 "how_to_cook" => [
@@ -706,7 +706,7 @@ class RecipeSeeder extends Seeder
             ],
             [
                 "name" => "Suco de abacaxi, maçã e gengibre",
-                "image" => env("STORAGE_URL")."/public%2Frecipes%2F{image}?alt=media",
+                "image" => env("STORAGE_URL")."/public%2Frecipes%2Fsucoabacaximaca.jpg?alt=media",
                 "number_of_servings" => 8,
                 "cooking_time" => 10,
                 "how_to_cook" => [
