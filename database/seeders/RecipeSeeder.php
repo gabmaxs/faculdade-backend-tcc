@@ -586,7 +586,13 @@ class RecipeSeeder extends Seeder
                 "image" => env("STORAGE_URL")."/public%2Frecipes%2Fpesto.jpg?alt=media",
                 "number_of_servings" => 20,
                 "cooking_time" => 20,
-                "how_to_cook" => [],
+                "how_to_cook" => [
+                    "Lave as folhas de manjerição e seque bem",
+                    "Descasque os dentes de alho",
+                    "Em um processador ou liquidificador bata primeiro as nozes e o azeite",
+                    "Acrescente o alho, o parmessão e o manjericão e deixe triturar bem",
+                    "Tempere com o sal"
+                ],
                 "category_id" => 9,
                 "user_id" => 1,
                 "ingredients" => [
