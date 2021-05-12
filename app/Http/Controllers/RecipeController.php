@@ -25,7 +25,7 @@ class RecipeController extends Controller
             "list_of_ingredients.*.name" => "required|string|max:255",
             "list_of_ingredients.*.quantity" => "required|numeric",
             "list_of_ingredients.*.measure" => "required|string|max:255|" . Rule::in(config("measures.available")),
-            "image" => "required|string"
+            "image" => "nullable|string"
         ]);
 
         $recipe = $user->recipes()->create([
@@ -34,6 +34,7 @@ class RecipeController extends Controller
             "cooking_time" => $request->cooking_time,
             "how_to_cook" => $request->how_to_cook,
             "category_id" => $request->category_id,
+            "image" => env('STORAGE_URL') . "/public%2Fdefault.png?alt=media"
         ]);
         $recipe->saveIngredients($request->get('list_of_ingredients'));
         if($request->has("image") && !empty($request->get("image"))) {
