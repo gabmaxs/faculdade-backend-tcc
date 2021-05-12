@@ -51,6 +51,11 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
+        
+        $user->profile()->create([
+            "culinary_level" => 0,
+            "gender" => ""
+        ]);
 
         $token = auth()->login($user);
         if(!$token) throw new AuthenticationException();
