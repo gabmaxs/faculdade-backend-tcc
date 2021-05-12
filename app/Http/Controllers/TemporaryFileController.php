@@ -9,7 +9,7 @@ class TemporaryFileController extends Controller
 {
     public function upload(Request $request) {
         $request->validate([
-            "image" => "required|file|mimes:jpg,gif,png,jpeg|max:2048",
+            "image" => "required|file|mimes:jpg,gif,png,jpeg|max:12048",
         ]);
 
         if($request->hasFile("image")) {

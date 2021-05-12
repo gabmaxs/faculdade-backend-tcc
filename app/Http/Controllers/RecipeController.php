@@ -36,10 +36,12 @@ class RecipeController extends Controller
             "category_id" => $request->category_id,
         ]);
         $recipe->saveIngredients($request->get('list_of_ingredients'));
-        $temporaryFile = TemporaryFile::where("folder", $request->image)->first();
-        if($temporaryFile) {
-            $recipe->saveImage("recipes/tmp/{$request->image}/", $temporaryFile->filename);
-            $temporaryFile->delete();
+        if($request->has("image") && !empty($request->get("image"))) {
+            $temporaryFile = TemporaryFile::where("folder", $request->image)->first();
+            if($temporaryFile) {
+                $recipe->saveImage("recipes/tmp/{$request->image}/", $temporaryFile->filename);
+                $temporaryFile->delete();
+            }
         }
 
         return (new RecipeResource($recipe,Recipe::message("created")))->response()->setStatusCode(201);
