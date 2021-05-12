@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Recipe extends Model
 {
@@ -79,6 +80,7 @@ class Recipe extends Model
 
     public function hasIngredient($ingredientName) {
         return $this->ingredients()->get()->contains(function ($ingredient) use ($ingredientName) {
+            if(empty($ingredientName)) return false;
             return is_int(strpos($ingredient->name, strtolower($ingredientName)));
         });
     }
@@ -125,9 +127,14 @@ class Recipe extends Model
         });
         
         if(!empty($ingredients)) {
-            return $data->filter(function ($recipe) {
+            $recipes = $data->filter(function ($recipe) {
                 return isset($recipe->attributes["matched_ingredients"]);
             });
+            
+            if($recipes->isEmpty()) 
+                throw new NotFoundHttpException("Não existe receitas com esses ingredientes");
+
+            return $recipes;
         }
 
         return $data;
