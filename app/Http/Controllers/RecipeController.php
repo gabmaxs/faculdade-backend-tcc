@@ -72,7 +72,7 @@ class RecipeController extends Controller
             "recipes" => "array"
         ]);
 
-        return $request->get("recipes");
+        return response()->json($request->get("recipes"));
 
         $recipesData = $request->collect("recipes");
         $recipes = collect([]);
