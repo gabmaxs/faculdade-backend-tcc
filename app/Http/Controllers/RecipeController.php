@@ -9,6 +9,7 @@ use App\Http\Resources\Recipe as RecipeResource;
 use App\Http\Resources\RecipeCollection;
 use App\Models\TemporaryFile;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Collection;
 
 class RecipeController extends Controller
 {
@@ -72,9 +73,7 @@ class RecipeController extends Controller
             "recipes" => "array"
         ]);
 
-        return response()->json($request->get("recipes"));
-
-        $recipesData = $request->collect("recipes");
+        $recipesData = collect($request->get("recipes"));
         $recipes = collect([]);
 
         $recipesData->each(function ($recipe) use($user, $recipes) {
