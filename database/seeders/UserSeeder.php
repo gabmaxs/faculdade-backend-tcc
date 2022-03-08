@@ -16,8 +16,8 @@ class UserSeeder extends Seeder
     public function run()
     {
         $user = [
-            "name" => "Joao Marcos",
-            "email" => "email@email.com",
+            "name" => "MyCook Team",
+            "email" => "mycook@mycook.com",
             "password" => Hash::make("secret"),
         ];
         

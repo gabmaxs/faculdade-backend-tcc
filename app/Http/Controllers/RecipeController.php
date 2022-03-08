@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Recipe;
-use App\Models\Ingredient;
+use App\Models\User;
 use App\Http\Resources\Recipe as RecipeResource;
 use App\Http\Resources\RecipeCollection;
 use App\Models\TemporaryFile;
@@ -63,5 +63,32 @@ class RecipeController extends Controller
             ->values();
         
         return new RecipeCollection($recipes,Recipe::message("index"), $request->query("ingredients", []));
+    }
+
+    public function storeMany(Request $request) {
+        $user = User::find(1);
+
+        $request->validate([
+            "recipes" => "array"
+        ]);
+
+        $recipesData = $request->collect("recipes");
+        $recipes = collect([]);
+
+        $recipesData->each(function ($recipe) use($user, $recipes) {
+            $storedRecipe = $user->recipes()->create([
+                "name" => $recipe->name,
+                "number_of_servings" => $recipe->number_of_servings,
+                "cooking_time" => $recipe->cooking_time,
+                "how_to_cook" => $recipe->how_to_cook,
+                "category_id" => $recipe->category_id,
+                "image" => env('STORAGE_URL') . "/public%2F{$recipe->image}?alt=media"
+            ]);
+            $storedRecipe->saveIngredients($recipe->get('list_of_ingredients'));
+    
+            $recipes->push($storedRecipe);
+        });
+
+        return (new RecipeCollection($recipes ,Recipe::message("created")))->response()->setStatusCode(201);
     }
 }
