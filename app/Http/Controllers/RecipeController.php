@@ -85,7 +85,7 @@ class RecipeController extends Controller
                 "category_id" => $recipe['category_id'],
                 "image" => env('STORAGE_URL') . "/public%2F{$recipe['image']}?alt=media"
             ]);
-            $storedRecipe->saveIngredients($recipe->get('list_of_ingredients'));
+            $storedRecipe->saveIngredients($recipe['list_of_ingredients']);
     
             $recipes->push($storedRecipe);
         });
