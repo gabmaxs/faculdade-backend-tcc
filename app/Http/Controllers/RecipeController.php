@@ -78,12 +78,12 @@ class RecipeController extends Controller
 
         $recipesData->each(function ($recipe) use($user, $recipes) {
             $storedRecipe = $user->recipes()->create([
-                "name" => $recipe->name,
-                "number_of_servings" => $recipe->number_of_servings,
-                "cooking_time" => $recipe->cooking_time,
-                "how_to_cook" => $recipe->how_to_cook,
-                "category_id" => $recipe->category_id,
-                "image" => env('STORAGE_URL') . "/public%2F{$recipe->image}?alt=media"
+                "name" => $recipe['name'],
+                "number_of_servings" => $recipe['number_of_servings'],
+                "cooking_time" => $recipe['cooking_time'],
+                "how_to_cook" => $recipe['how_to_cook'],
+                "category_id" => $recipe['category_id'],
+                "image" => env('STORAGE_URL') . "/public%2F{$recipe['image']}?alt=media"
             ]);
             $storedRecipe->saveIngredients($recipe->get('list_of_ingredients'));
     
