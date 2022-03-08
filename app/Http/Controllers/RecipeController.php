@@ -83,7 +83,7 @@ class RecipeController extends Controller
                 "cooking_time" => $recipe['cooking_time'],
                 "how_to_cook" => $recipe['how_to_cook'],
                 "category_id" => $recipe['category_id'],
-                "image" => env('STORAGE_URL') . "/public%2F{$recipe['image']}?alt=media"
+                "image" => env('STORAGE_URL') . "/public%2Frecipes%2F{$recipe['image']}?alt=media"
             ]);
             $storedRecipe->saveIngredients($recipe['list_of_ingredients']);
     
