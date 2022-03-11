@@ -85,7 +85,18 @@ class RecipeController extends Controller
                 "category_id" => $recipe['category_id'],
                 "image" => env('STORAGE_URL') . "/public%2Frecipes%2F{$recipe['image']}?alt=media"
             ]);
-            $storedRecipe->saveIngredients($recipe['list_of_ingredients']);
+
+            $list_of_ingredients = collect([]);
+            foreach($recipe['list_of_ingredients'] as $ingredient) {
+                $array = explode(" ", $ingredient);
+                $list_of_ingredients->push([
+                    "name" => str_replace("-", " ", $array[2]),
+                    "quantity" => $array[0],
+                    "measure" => str_replace("-", " ", $array[1])
+                ]);
+            }
+
+            $storedRecipe->saveIngredients($list_of_ingredients->toArray());
     
             $recipes->push($storedRecipe);
         });
