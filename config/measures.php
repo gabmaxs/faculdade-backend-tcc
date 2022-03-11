@@ -10,7 +10,10 @@ return [
         "fatia",
         "gramas",
         "litro",
+        "mililitro",
         "unidade",
         "xícara",
+        "folhas",
+        "tablete",
     ]
 ];
