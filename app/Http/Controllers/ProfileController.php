@@ -74,10 +74,15 @@ class ProfileController extends Controller
 
     public function like() {
         $user = auth()->user();
+
+        $recipes = $user->likedRecipes->map(function ($recipe) {
+            return $recipe->id;
+        });
+
         return response()->json([
             "success" => true,
             "message" => "Suas receitas preferidas",
-            "data" => $user->likedRecipes
+            "data" => $recipes
         ]);
     }
 }
