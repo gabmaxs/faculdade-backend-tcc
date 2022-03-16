@@ -76,7 +76,7 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         $recipes = $user->likedRecipes->map(function ($recipe) {
-            return $recipe->id;
+            return $recipe->only(["id", "name", "category_id"]);
         });
 
         return response()->json([
