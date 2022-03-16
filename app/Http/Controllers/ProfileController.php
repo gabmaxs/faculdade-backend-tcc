@@ -71,4 +71,13 @@ class ProfileController extends Controller
         
         return new UserResource($user, "Perfil atualizado");
     }
+
+    public function like() {
+        $user = auth()->user();
+        return response()->json([
+            "success" => true,
+            "message" => "Suas receitas preferidas",
+            "data" => $user->likedRecipes
+        ]);
+    }
 }

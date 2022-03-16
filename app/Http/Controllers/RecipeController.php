@@ -66,6 +66,18 @@ class RecipeController extends Controller
         return new RecipeCollection($recipes,Recipe::message("index"), $request->query("ingredients", []));
     }
 
+    public function like(Recipe $recipe) {
+        $user = auth()->user();
+
+        $user->likedRecipes()->toggle([$recipe->id]);
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recipe {$recipe->name} updated",
+            "data" => $recipe
+        ]);
+    }
+
     public function storeMany(Request $request) {
         $user = User::find(1);
 
