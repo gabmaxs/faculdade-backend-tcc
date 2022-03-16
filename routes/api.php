@@ -28,6 +28,7 @@ Route::middleware(["auth:api"])->group(function () {
     Route::get("user/recipe/like", "ProfileController@like");
     Route::post("recipe", "RecipeController@store");
     Route::post("recipe/{recipe}/like", "RecipeController@like");
+    Route::get("recipe/{recipe}/like", "RecipeController@isLiked");
 });
 
 Route::post("recipe/many", "RecipeController@storeMany");
