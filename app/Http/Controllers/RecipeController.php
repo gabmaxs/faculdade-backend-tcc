@@ -81,22 +81,12 @@ class RecipeController extends Controller
     public function isLiked(Recipe $recipe) {
         $user = auth()->user();
 
-        $recipes2 = $user->likedRecipes()->where("recipe_id", $recipe->id)->first();
-
-        $recipes = $user->likedRecipes()->get();
-
-        $contains = $recipes->contains(function ($item) use ($recipe) {
-            return $item->id == $recipe->id;
-        });
+        $contains = $user->likedRecipes()->where("recipe_id", $recipe->id)->first();
 
         return response()->json([
             "success" => true,
             "message" => "Recipe {$recipe->name} info",
-            "data" => [
-                "contains" => $contains,
-                "where" => $recipes2 != null ? true : false,
-                "whereV" => $recipes2
-            ]
+            "data" => $contains != null ? true : false
         ]);
     }
 
