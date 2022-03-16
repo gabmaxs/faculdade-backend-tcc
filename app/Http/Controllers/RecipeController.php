@@ -94,7 +94,7 @@ class RecipeController extends Controller
             "message" => "Recipe {$recipe->name} info",
             "data" => [
                 "contains" => $contains,
-                "where" => $recipes2->isEmpty(),
+                "where" => $recipes2 != null ? true : false,
                 "whereV" => $recipes2
             ]
         ]);
